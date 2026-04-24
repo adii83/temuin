@@ -1,41 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/server";
 
 const highlights = [
   "Laporan resmi kampus",
   "Verifikasi oleh admin",
   "Serah terima terkontrol",
-];
-
-const latestFindings = [
-  {
-    item: "Laptop Asus Vivobook",
-    location: "Gedung B, Lantai 2",
-    date: "24 Apr 2026",
-    image:
-      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=900&q=80",
-  },
-  {
-    item: "Dompet Kulit Hitam",
-    location: "Area Parkir Timur",
-    date: "23 Apr 2026",
-    image:
-      "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=900&q=80",
-  },
-  {
-    item: "Tumbler Stainless Navy",
-    location: "Perpustakaan Pusat",
-    date: "23 Apr 2026",
-    image:
-      "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=900&q=80",
-  },
-  {
-    item: "Flashdisk 64GB",
-    location: "Lab Komputer",
-    date: "22 Apr 2026",
-    image:
-      "https://images.unsplash.com/photo-1587033411391-5d9e51cce126?auto=format&fit=crop&w=900&q=80",
-  },
 ];
 
 const flow = [
@@ -56,7 +26,20 @@ const flow = [
   },
 ];
 
-export default function Home() {
+const fallbackImage = "https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=500";
+
+export default async function Home() {
+  const supabase = await createClient();
+  // Fetch latest 4 items regardless of status for now, or you can keep the filter if you prefer.
+  // The user says "berbeda dari yang ditampilkan", so maybe they want to see everything or the status is not 'Tayang'.
+  const { data: latestFindings } = await supabase
+    .from("found_items")
+    .select("*")
+    .eq("status", "Tayang")
+    .order("found_date", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(4);
+
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f7f3eb_0%,#f1f5f2_50%,#fcfaf6_100%)] text-slate-900">
       <div className="mx-auto max-w-7xl px-6 py-6 sm:px-8 lg:px-12">
@@ -152,7 +135,7 @@ export default function Home() {
             ].map(([title, body]) => (
               <article
                 key={title}
-                className="rounded-[1.75rem] border border-white/80 bg-white/78 p-6 shadow-[0_18px_48px_rgba(15,23,42,0.05)]"
+                className="rounded-[1.75rem] border border-white/80 bg-white/78 p-6 shadow-[0_18px_48px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.1)]"
               >
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-teal-900/70">
                   {title}
@@ -170,7 +153,7 @@ export default function Home() {
                 Temuan terbaru
               </p>
               <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl leading-tight text-slate-950 sm:text-5xl">
-                Daftar barang temuan resmi.
+                Daftar barang temuan terbaru.
               </h2>
             </div>
             <Link
@@ -182,32 +165,43 @@ export default function Home() {
           </div>
 
           <div className="relative mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {latestFindings.map((item) => (
-              <article
-                key={item.item}
-                className="flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-white/80 bg-white/86 shadow-[0_18px_54px_rgba(15,23,42,0.06)]"
-              >
-                <div className="relative h-56 overflow-hidden bg-slate-100">
-                  <div className="absolute right-5 top-5 rounded-full bg-white/88 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-teal-900">
-                    Resmi
+            {(latestFindings || []).map((item) => (
+              <Link key={item.id} href="/login" className="group block h-full">
+                <article
+                  className="flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-white/80 bg-white/86 shadow-[0_18px_54px_rgba(15,23,42,0.06)] transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_32px_80px_rgba(15,23,42,0.12)]"
+                >
+                  <div className="relative h-56 overflow-hidden bg-slate-100">
+                    <div className="absolute left-5 top-5 z-10 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-teal-950 shadow-sm backdrop-blur-md">
+                      {item.category}
+                    </div>
+                    <img
+                      src={item.image_urls?.[0] || fallbackImage}
+                      alt={item.item_name}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,rgba(15,23,42,0.25)_100%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                   </div>
-                  <img
-                    src={item.image}
-                    alt={item.item}
-                    className="h-full w-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_35%,rgba(15,23,42,0.18)_100%)]" />
-                </div>
-                <div className="flex flex-1 flex-col p-5">
-                  <h3 className="min-h-[3.75rem] text-xl leading-tight font-semibold text-slate-950">
-                    {item.item}
-                  </h3>
-                  <p className="mt-2 text-sm text-slate-500">{item.location}</p>
-                  <p className="mt-auto pt-5 text-xs font-medium uppercase tracking-[0.24em] text-slate-400">
-                    {item.date}
-                  </p>
-                </div>
-              </article>
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="min-h-[3.75rem] text-xl font-bold leading-tight text-slate-950">
+                      {item.item_name}
+                    </h3>
+                    <p className="mt-2 text-sm text-slate-500">{item.location}</p>
+                    <p className="mt-3 text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
+                      {new Date(item.found_date).toLocaleDateString("id-ID", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                    
+                    <div 
+                      className="mt-6 flex w-full items-center justify-center rounded-2xl bg-teal-950 py-3 text-sm font-bold text-white transition-all duration-300 group-hover:bg-teal-900 active:scale-95"
+                    >
+                      Ajukan Kepemilikan
+                    </div>
+                  </div>
+                </article>
+              </Link>
             ))}
           </div>
         </section>
