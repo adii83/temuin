@@ -231,6 +231,14 @@ Pengujian dilakukan berdasarkan **10 Use Case Utama** dan **3 Use Case Pendukung
 
 ---
 
+## 🌐 Akses & Panduan Penggunaan
+
+Aplikasi sudah di-hosting dan dapat diakses di: **[https://temuin-nu.vercel.app](https://temuin-nu.vercel.app)**
+
+Untuk panduan lengkap cara login, daftar, dan penggunaan semua fitur, lihat file **[PANDUAN.md](./PANDUAN.md)**.
+
+---
+
 ## 🏗️ Cara Menjalankan Proyek
 
 ### Prasyarat
@@ -265,14 +273,6 @@ Buka [http://localhost:3000](http://localhost:3000) di browser.
 | ----- | ---------------------------------- | -------- |
 | Admin | Atur melalui Supabase Auth         | —        |
 | User  | Daftar melalui halaman `/register` | —        |
-
----
-
-## 🌐 Akses & Panduan Penggunaan
-
-Aplikasi sudah di-hosting dan dapat diakses di: **[https://temuin-nu.vercel.app](https://temuin-nu.vercel.app)**
-
-Untuk panduan lengkap cara login, daftar, dan penggunaan semua fitur, lihat file **[PANDUAN.md](./PANDUAN.md)**.
 
 ---
 
