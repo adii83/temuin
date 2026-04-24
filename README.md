@@ -263,9 +263,11 @@ Buka [http://localhost:3000](http://localhost:3000) di browser.
 
 ---
 
-## 📁 Dokumen Terkait
+## 🌐 Akses & Panduan Penggunaan
 
-- **Remidi Daily Project 6** — `Remidi-Daily-Project-6_SlametHariyadi-202310370311221-RekayasaKebutuhan_B.pdf` *(terlampir di repository ini)*
+Aplikasi sudah di-hosting dan dapat diakses di: **[https://temuin-nu.vercel.app](https://temuin-nu.vercel.app)**
+
+Untuk panduan lengkap cara login, daftar, dan penggunaan semua fitur, lihat file **[PANDUAN.md](./PANDUAN.md)**.
 
 ---
 
