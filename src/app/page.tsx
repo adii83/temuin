@@ -1,4 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/server";
 
 const highlights = [
   "Laporan resmi kampus",
@@ -6,47 +8,43 @@ const highlights = [
   "Serah terima terkontrol",
 ];
 
-const latestFindings = [
-  {
-    item: "Laptop Asus Vivobook",
-    location: "Gedung B, Lantai 2",
-    date: "24 Apr 2026",
-  },
-  {
-    item: "Dompet Kulit Hitam",
-    location: "Area Parkir Timur",
-    date: "23 Apr 2026",
-  },
-  {
-    item: "Tumbler Stainless Navy",
-    location: "Perpustakaan Pusat",
-    date: "23 Apr 2026",
-  },
-];
-
 const flow = [
   {
     number: "01",
-    title: "Lapor",
-    body: "Pengguna mengirim laporan kehilangan atau temuan.",
+    title: "Laporan Masuk",
+    body: "Pengguna mengirim laporan kehilangan atau temuan melalui sistem.",
   },
   {
     number: "02",
-    title: "Verifikasi",
-    body: "Admin memeriksa laporan dan menerima barang fisik.",
+    title: "Verifikasi Admin",
+    body: "Admin memeriksa data laporan dan menerima barang fisik yang dititipkan.",
   },
   {
     number: "03",
-    title: "Serah Terima",
-    body: "Barang diberikan kepada pemilik sah melalui admin.",
+    title: "Proses Serah Terima",
+    body: "Barang diberikan kepada pemilik sah setelah verifikasi kepemilikan selesai.",
   },
 ];
 
-export default function Home() {
+const fallbackImage = "https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=500";
+
+export default async function Home() {
+  const supabase = await createClient();
+  // Fetch latest 4 items regardless of status for now, or you can keep the filter if you prefer.
+  // The user says "berbeda dari yang ditampilkan", so maybe they want to see everything or the status is not 'Tayang'.
+  const { data: latestFindings } = await supabase
+    .from("found_items")
+    .select("*")
+    .eq("status", "Tayang")
+    .order("found_date", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(4);
+
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#f7f3eb_0%,#f3f6f3_52%,#fcfaf6_100%)] text-slate-900">
+    <main className="min-h-screen bg-[linear-gradient(180deg,#f7f3eb_0%,#f1f5f2_50%,#fcfaf6_100%)] text-slate-900">
       <div className="mx-auto max-w-7xl px-6 py-6 sm:px-8 lg:px-12">
-        <header className="sticky top-4 z-10 rounded-full border border-white/80 bg-white/82 px-5 py-3 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur">
+        <header className="sticky top-4 z-20 rounded-full border border-white/80 bg-white/78 px-5 py-3 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+          <div className="glass-line" />
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-950 text-sm font-semibold text-white">
@@ -57,7 +55,7 @@ export default function Home() {
                   TEMUIN
                 </p>
                 <p className="text-sm text-slate-600">
-                  Lost and Found Kampus
+                  Lost & Found Kampus
                 </p>
               </div>
             </div>
@@ -79,27 +77,27 @@ export default function Home() {
           </div>
         </header>
 
-        <section className="relative overflow-hidden rounded-[2.5rem] border border-white/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.82),rgba(245,239,228,0.76))] px-7 py-12 shadow-[0_32px_100px_rgba(15,23,42,0.08)] sm:px-10 lg:px-14 lg:py-18">
-          <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(201,162,92,0.18),transparent_65%)]" />
-          <div className="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(11,59,63,0.14),transparent_68%)]" />
+        <section className="section-shell relative mt-12 rounded-[2.75rem] px-7 py-12 sm:px-10 lg:px-14 lg:py-16">
+          <div className="absolute left-12 top-12 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(11,59,63,0.06),transparent_70%)]" />
+          <div className="absolute right-12 top-14 h-32 w-32 rounded-full bg-[radial-gradient(circle,rgba(201,162,92,0.08),transparent_70%)]" />
 
-          <div className="relative grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-            <div className="max-w-3xl">
-              <span className="inline-flex rounded-full border border-teal-900/10 bg-white/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.34em] text-teal-900/75">
+          <div className="relative flex min-h-[24rem] items-start py-4 sm:min-h-[28rem] sm:items-center">
+            <div className="max-w-4xl">
+              <span className="inline-flex rounded-full border border-teal-900/10 bg-white/82 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.34em] text-teal-900/75">
                 Platform layanan kampus
               </span>
-              <h1 className="mt-8 max-w-4xl font-[family-name:var(--font-display)] text-5xl leading-[1.02] text-slate-950 sm:text-6xl lg:text-7xl">
+              <h1 className="mt-8 font-[family-name:var(--font-display)] text-6xl leading-[0.96] text-slate-950 sm:text-7xl lg:text-[7.25rem]">
                 TEMUIN
               </h1>
-              <p className="mt-4 max-w-2xl text-xl leading-8 text-slate-700 sm:text-2xl">
+              <p className="mt-6 max-w-3xl text-2xl leading-10 text-slate-700 sm:text-3xl sm:leading-[3rem]">
                 Sistem resmi kampus untuk barang hilang dan barang temuan.
               </p>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">
-                Sederhana, aman, dan terstruktur untuk membantu proses pelaporan,
+              <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+                Ringkas, aman, dan terstruktur untuk membantu proses pelaporan,
                 verifikasi, dan serah terima.
               </p>
 
-              <div className="mt-9 flex flex-col gap-4 sm:flex-row">
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
                 <Link
                   href="/login"
                   className="inline-flex items-center justify-center rounded-full bg-teal-950 px-7 py-4 text-sm font-semibold text-white hover:bg-teal-900"
@@ -125,47 +123,119 @@ export default function Home() {
                 ))}
               </div>
             </div>
+          </div>
+        </section>
 
-            <div className="rounded-[2rem] border border-white/80 bg-white/80 p-5 shadow-[0_20px_70px_rgba(15,23,42,0.08)] backdrop-blur">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.32em] text-teal-900/70">
-                    Temuan terbaru
-                  </p>
-                  <p className="mt-2 text-sm text-slate-500">
-                    Contoh daftar barang yang sudah diterima admin
-                  </p>
-                </div>
-                <Link
-                  href="/login"
-                  className="text-sm font-semibold text-teal-900 hover:text-teal-700"
+        <section className="section-shell mt-10 rounded-[2.4rem] px-6 py-8 sm:px-8">
+          <div className="relative grid gap-5 md:grid-cols-3">
+            {[
+              ["Aman", "Semua proses dikelola melalui layanan kampus."],
+              ["Jelas", "Alur dibuat singkat dan mudah dipahami."],
+              ["Terkontrol", "Verifikasi dan serah terima dilakukan admin."],
+            ].map(([title, body]) => (
+              <article
+                key={title}
+                className="rounded-[1.75rem] border border-white/80 bg-white/78 p-6 shadow-[0_18px_48px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.1)]"
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-teal-900/70">
+                  {title}
+                </p>
+                <p className="mt-4 text-base leading-7 text-slate-600">{body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="section-shell mt-10 rounded-[2.6rem] px-6 py-10 sm:px-8 lg:px-10">
+          <div className="relative flex items-end justify-between gap-6">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.34em] text-teal-900/70">
+                Temuan terbaru
+              </p>
+              <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl leading-tight text-slate-950 sm:text-5xl">
+                Daftar barang temuan terbaru.
+              </h2>
+            </div>
+            <Link
+              href="/login"
+              className="hidden rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 hover:border-teal-900 hover:text-teal-900 sm:inline-flex"
+            >
+              Lihat semua
+            </Link>
+          </div>
+
+          <div className="relative mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {(latestFindings || []).map((item) => (
+              <Link key={item.id} href="/login" className="group block h-full">
+                <article
+                  className="flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-white/80 bg-white/86 shadow-[0_18px_54px_rgba(15,23,42,0.06)] transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_32px_80px_rgba(15,23,42,0.12)]"
                 >
-                  Lihat semua
-                </Link>
-              </div>
-
-              <div className="mt-4 space-y-3">
-                {latestFindings.map((item) => (
-                  <article
-                    key={item.item}
-                    className="rounded-[1.5rem] border border-slate-100 bg-[var(--color-paper)] p-4"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <h2 className="text-lg font-semibold text-slate-950">
-                          {item.item}
-                        </h2>
-                        <p className="mt-1 text-sm text-slate-500">
-                          {item.location}
-                        </p>
-                      </div>
-                      <span className="rounded-full bg-[var(--color-teal-100)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-teal-900">
-                        Resmi
-                      </span>
+                  <div className="relative h-56 overflow-hidden bg-slate-100">
+                    <div className="absolute left-5 top-5 z-10 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-teal-950 shadow-sm backdrop-blur-md">
+                      {item.category}
                     </div>
-                    <p className="mt-4 text-xs font-medium uppercase tracking-[0.24em] text-slate-400">
-                      {item.date}
+                    <img
+                      src={item.image_urls?.[0] || fallbackImage}
+                      alt={item.item_name}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,rgba(15,23,42,0.25)_100%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  </div>
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="min-h-[3.75rem] text-xl font-bold leading-tight text-slate-950">
+                      {item.item_name}
+                    </h3>
+                    <p className="mt-2 text-sm text-slate-500">{item.location}</p>
+                    <p className="mt-3 text-xs font-medium uppercase tracking-[0.2em] text-slate-400">
+                      {new Date(item.found_date).toLocaleDateString("id-ID", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </p>
+                    
+                    <div 
+                      className="mt-6 flex w-full items-center justify-center rounded-2xl bg-teal-950 py-3 text-sm font-bold text-white transition-all duration-300 group-hover:bg-teal-900 active:scale-95"
+                    >
+                      Ajukan Kepemilikan
+                    </div>
+                  </div>
+                </article>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="section-shell mt-10 rounded-[2.6rem] px-6 py-10 sm:px-8 lg:px-10">
+          <div className="relative grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+            <div className="max-w-xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.34em] text-teal-900/70">
+                Alur layanan
+              </p>
+              <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl leading-tight text-slate-950 sm:text-5xl">
+                Satu alur yang singkat, formal, dan mudah diikuti.
+              </h2>
+            </div>
+
+            <div className="relative">
+              <div className="absolute left-7 top-0 hidden h-full w-px bg-[linear-gradient(180deg,rgba(11,59,63,0.12),rgba(11,59,63,0.38),rgba(11,59,63,0.12))] sm:block" />
+              <div className="grid gap-5">
+                {flow.map((step) => (
+                  <article
+                    key={step.number}
+                    className="relative grid gap-4 rounded-[1.75rem] border border-white/80 bg-white/84 p-6 shadow-[0_18px_54px_rgba(15,23,42,0.05)] sm:grid-cols-[88px_1fr] sm:items-start"
+                  >
+                    <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-full border border-[#d7c08a]/40 bg-teal-950 text-sm font-semibold tracking-[0.2em] text-white shadow-[0_10px_30px_rgba(11,59,63,0.22)] sm:h-16 sm:w-16">
+                      {step.number}
+                    </div>
+                    <div className="rounded-[1.35rem] border border-slate-100 bg-[linear-gradient(180deg,#fffdfa_0%,#f7f3eb_100%)] p-5">
+                      <h3 className="text-2xl font-semibold text-slate-950">
+                        {step.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-7 text-slate-600 sm:text-base">
+                        {step.body}
+                      </p>
+                    </div>
                   </article>
                 ))}
               </div>
@@ -173,55 +243,82 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="grid gap-5 py-10 md:grid-cols-3">
-          {[
-            ["Aman", "Semua proses dikelola melalui layanan kampus."],
-            ["Jelas", "Alur dibuat singkat dan mudah dipahami."],
-            ["Terkontrol", "Verifikasi dan serah terima dilakukan admin."],
-          ].map(([title, body]) => (
-            <article
-              key={title}
-              className="rounded-[1.75rem] border border-white/80 bg-white/78 p-6 shadow-[0_18px_48px_rgba(15,23,42,0.05)]"
-            >
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-teal-900/70">
-                {title}
-              </p>
-              <p className="mt-4 text-base leading-7 text-slate-600">{body}</p>
-            </article>
-          ))}
-        </section>
-
-        <section className="grid gap-8 py-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-          <div className="max-w-xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.34em] text-teal-900/70">
-              Alur layanan
-            </p>
-            <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl leading-tight text-slate-950 sm:text-5xl">
-              Satu alur yang singkat, formal, dan mudah diikuti.
-            </h2>
-          </div>
-
-          <div className="grid gap-4">
-            {flow.map((step) => (
-              <article
-                key={step.number}
-                className="grid gap-4 rounded-[1.75rem] border border-white/80 bg-white/82 p-6 shadow-[0_18px_48px_rgba(15,23,42,0.05)] sm:grid-cols-[88px_1fr] sm:items-start"
-              >
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-teal-950 text-sm font-semibold tracking-[0.2em] text-white sm:h-16 sm:w-16">
-                  {step.number}
+        <footer className="mt-10 overflow-hidden rounded-[2.2rem] border border-white/80 bg-[#0b3b3f] text-white shadow-[0_24px_70px_rgba(11,59,63,0.18)]">
+          <div className="grid gap-10 px-6 py-10 sm:px-8 lg:grid-cols-[1.25fr_0.75fr_0.75fr_0.9fr] lg:px-10">
+            <div>
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-sm font-semibold text-teal-950">
+                  T
                 </div>
                 <div>
-                  <h3 className="text-2xl font-semibold text-slate-950">
-                    {step.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-7 text-slate-600 sm:text-base">
-                    {step.body}
+                  <p className="text-xs font-semibold uppercase tracking-[0.34em] text-white/70">
+                    TEMUIN
                   </p>
+                  <p className="text-sm text-white/72">Lost & Found Kampus</p>
                 </div>
-              </article>
-            ))}
+              </div>
+              <p className="mt-6 max-w-md text-sm leading-7 text-white/68">
+                Layanan resmi kampus untuk membantu pelaporan, verifikasi, dan
+                serah terima barang hilang maupun temuan.
+              </p>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#d7c08a]">
+                Layanan
+              </p>
+              <div className="mt-5 grid gap-3 text-sm text-white/70">
+                <Link href="/login" className="hover:text-white">
+                  Barang temuan
+                </Link>
+                <Link href="/login" className="hover:text-white">
+                  Lapor kehilangan
+                </Link>
+                <Link href="/login" className="hover:text-white">
+                  Lapor temuan
+                </Link>
+                <Link href="/login" className="hover:text-white">
+                  Lacak status
+                </Link>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#d7c08a]">
+                Akses
+              </p>
+              <div className="mt-5 grid gap-3 text-sm text-white/70">
+                <Link href="/login" className="hover:text-white">
+                  Login pengguna
+                </Link>
+                <Link href="/register" className="hover:text-white">
+                  Daftar akun
+                </Link>
+                <Link href="/admin/login" className="hover:text-white">
+                  Login admin
+                </Link>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#d7c08a]">
+                Informasi
+              </p>
+              <div className="mt-5 space-y-3 text-sm leading-7 text-white/70">
+                <p>Unit layanan barang hilang dan temuan kampus</p>
+                <p>Senin sampai Jumat, 08.00 sampai 16.00</p>
+                <p>Gedung layanan administrasi kampus</p>
+              </div>
+            </div>
           </div>
-        </section>
+
+          <div className="border-t border-white/10 px-6 py-5 sm:px-8 lg:px-10">
+            <div className="flex flex-col gap-3 text-sm text-white/58 md:flex-row md:items-center md:justify-between">
+              <p>© 2026 TEMUIN. Sistem layanan kampus.</p>
+              <p>Terstruktur, aman, dan terverifikasi.</p>
+            </div>
+          </div>
+        </footer>
       </div>
     </main>
   );
