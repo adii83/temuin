@@ -1,26 +1,128 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-ivory: #f7f2e8;
+  --color-paper: #fffdf8;
+  --color-ink: #142127;
+  --color-muted: #607078;
+  --color-teal-950: #0b3b3f;
+  --color-teal-900: #13535a;
+  --color-teal-100: #dcebe7;
+  --color-gold: #c9a25c;
+  --color-line: rgba(20, 33, 39, 0.08);
+  --shadow-soft: 0 30px 80px rgba(15, 23, 42, 0.08);
+  --shadow-card: 0 18px 48px rgba(15, 23, 42, 0.1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), sans-serif;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: ease;
+}
+
+main {
+  animation: pageIn 260ms ease both;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-shell {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.84),
+    rgba(245, 239, 228, 0.72)
+  );
+  box-shadow: 0 32px 100px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.section-shell::before {
+  content: "";
+  position: absolute;
+  inset: 1.1rem;
+  border-radius: calc(1.5rem + 0.5vw);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+
+.glass-line {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 10%,
+    rgba(255, 255, 255, 0.25) 30%,
+    transparent 55%
+  );
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+::selection {
+  background: rgba(11, 59, 63, 0.18);
+}
+
+/* Custom Select Dropdown Styling */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+  padding-right: 2.5rem !important;
+  cursor: pointer;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+select:focus {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2313535a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='18 15 12 9 6 15'%3e%3c/polyline%3e%3c/svg%3e");
 }
